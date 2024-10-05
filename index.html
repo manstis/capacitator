@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sprint Planning Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        input[type="number"] {
+            width: 50px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Sprint Planning Calculator</h1>
+
+    <label for="sprintName">Sprint Name: </label>
+    <input type="text" id="sprintName" placeholder="Enter sprint name"><br><br>
+
+    <!-- Defaults to 88; ask me why if you're curious -->
+    <label for="teamVelocity">Team Velocity: </label>
+    <input type="number" id="teamVelocity" value="88" placeholder="Enter team velocity"> Story Points<br><br>
+
+    <label for="sprintStarts">Sprint Starts: </label>
+    <input type="date" id="sprintStarts"><br><br>
+
+    <label for="sprintEnds">Sprint Ends: </label>
+    <input type="date" id="sprintEnds"><br><br>
+
+    <label>Total Sprint Days (Excluding Weekends): </label>
+    <span id="sprintDays">0</span> days<br><br>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Team Member</th>
+                <th>Available Days</th>
+                <th>PTO Dates</th>
+            </tr>
+        </thead>
+        <tbody id="teamTable">
+        </tbody>
+    </table>
+
+    <button onclick="addTeamMember()">Add Team Member</button><br><br>
+
+    <label for="teamSize">Team Size: </label>
+    <input type="number" id="teamSize" value="0" disabled><br><br>
+
+    <label for="totalTeamDays">Total Team Days: </label>
+    <input type="number" id="totalTeamDays" value="0" disabled><br><br>
+
+    <label for="totalTeamCapacity">Total Team Capacity (%): </label>
+    <span id="totalTeamCapacity">0</span><br><br>
+
+    <label for="reservedCapacity">Reserved Capacity (%): </label>
+    <input type="number" id="reservedCapacity" value="10" oninput="calculateTargetStoryPoints()"><br><br>
+
+    <label for="targetStoryPoints">Target Story Points (Minus Reserved Capacity): </label>
+    <input type="number" id="targetStoryPoints" value="0" disabled><br><br>
+
+    <script>
+        window.onload = function() {
+            // Set the default values for Sprint Starts and Sprint Ends based on system's current date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('sprintStarts').value = today;
+            document.getElementById('sprintStarts').setAttribute('min', today);
+
+            // Set Sprint Ends to two weeks from the current date
+            const twoWeeksFromNow = new Date();
+            twoWeeksFromNow.setDate(twoWeeksFromNow.getDate() + 14);
+            const sprintEndsDate = twoWeeksFromNow.toISOString().split('T')[0];
+            document.getElementById('sprintEnds').value = sprintEndsDate;
+            document.getElementById('sprintEnds').setAttribute('min', today);
+
+            calculateSprintDays();
+        };
+
+        // Sprint Ends date should never be before Sprint Starts
+        document.getElementById('sprintStarts').addEventListener('change', function() {
+            const sprintStartDate = this.value;
+            document.getElementById('sprintEnds').setAttribute('min', sprintStartDate);
+            calculateSprintDays();
+        });
+
+        // Automatically calculate the total number of days in the Sprint
+        document.getElementById('sprintEnds').addEventListener('change', function() {
+            calculateSprintDays();
+        });
+
+        // Add new team member row
+        function addTeamMember() {
+            const table = document.getElementById('teamTable');
+            const newRow = table.insertRow();
+            
+            // Insert new cells for teammate name, available days, and PTO dates
+            const cell1 = newRow.insertCell(0);
+            const cell2 = newRow.insertCell(1);
+            const cell3 = newRow.insertCell(2);
+            
+            // Add input fields in the new row
+            cell1.innerHTML = '<input type="text" placeholder="Teammate Name">';
+            // TODO: Set value to default to total number of days in Sprint
+            cell2.innerHTML = '<input type="number" class="available-days" value="0" oninput="calculateTotalTeamDays()">';
+            cell3.innerHTML = '<input type="text" placeholder="PTO Dates">';
+            
+            // Update team size
+            document.getElementById('teamSize').value = document.getElementById('teamTable').rows.length;
+
+            // Recalculate total team days after adding a new member
+            calculateTotalTeamDays();
+        }
+
+        // Calculate the total number of days for the sprint for all team members
+        function calculateTotalTeamDays() {
+            const availableDaysInputs = document.getElementsByClassName('available-days');
+            let totalDays = 0;
+            
+            // Loop through all available days inputs and sum up their values
+            if (availableDaysInputs.length > 0) {
+                for (let i = 0; i < availableDaysInputs.length; i++) {
+                    const days = parseFloat(availableDaysInputs[i].value);
+                    totalDays += days;
+                }
+            }
+            document.getElementById('totalTeamDays').value = totalDays;
+
+            calculateTotalTeamCapacity();
+        }
+
+        function calculateTotalTeamCapacity() {
+            const totalTeamDays = parseFloat(document.getElementById('totalTeamDays').value);
+            const teamSize = parseInt(document.getElementById('teamSize').value);
+            const totalSprintDays = parseInt(document.getElementById('sprintDays').innerText);
+
+            if (teamSize > 0 && totalSprintDays > 0) {
+                const totalTeamCapacity = (totalTeamDays / teamSize) * totalSprintDays;
+                document.getElementById('totalTeamCapacity').innerText = totalTeamCapacity.toFixed(2);
+            } else {
+                document.getElementById('totalTeamCapacity').innerText = '0';
+            }
+
+            calculateTargetStoryPoints();
+        }
+
+        function calculateSprintDays() {
+            const sprintStart = new Date(document.getElementById('sprintStarts').value);
+            const sprintEnd = new Date(document.getElementById('sprintEnds').value);
+
+            // Calculate the number of working days excluding weekends
+            let workingDays = -1;
+            let currentDate = new Date(sprintStart);
+
+            while (currentDate <= sprintEnd) {
+                const dayOfWeek = currentDate.getDay();
+                if (dayOfWeek !== 0 && dayOfWeek !== 6) { // Exclude Saturdays and Sundays
+                    workingDays++;
+                }
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+
+            document.getElementById('sprintDays').innerText = workingDays;
+
+            // Recalculate team capacity based on new sprint days
+            calculateTotalTeamCapacity();
+        }
+
+        function calculateTargetStoryPoints() {
+            const teamVelocity = parseFloat(document.getElementById('teamVelocity').value);
+            const totalTeamCapacity = parseFloat(document.getElementById('totalTeamCapacity').innerText);
+            const reservedCapacity = parseFloat(document.getElementById('reservedCapacity').value) / 100;
+
+            if (!isNaN(totalTeamCapacity) && totalTeamCapacity > 0) {
+                const adjustedCapacity = totalTeamCapacity * (1 - reservedCapacity);
+                const targetStoryPoints = Math.round((adjustedCapacity / 100) * teamVelocity);
+                document.getElementById('targetStoryPoints').value = targetStoryPoints;
+            } else {
+                document.getElementById('targetStoryPoints').value = 0;
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -120,8 +120,7 @@
             
             // Add input fields in the new row
             cell1.innerHTML = '<input type="text" placeholder="Teammate Name">';
-            // TODO: Set value to default to total number of days in Sprint
-            cell2.innerHTML = '<input type="number" class="available-days" value="0" oninput="calculateTotalTeamDays()">';
+            cell2.innerHTML = `<input type="number" class="available-days" value="${document.getElementById('sprintDays').innerText}" oninput="calculateTotalTeamDays()">`;
             cell3.innerHTML = '<input type="text" placeholder="PTO Dates">';
             
             // Update team size

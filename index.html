@@ -122,14 +122,29 @@
             cell1.innerHTML = '<input type="text" placeholder="Teammate Name">';
             cell2.innerHTML = `<input type="number" class="available-days" value="${document.getElementById('sprintDays').innerText}" oninput="calculateTotalTeamDays()">`;
             cell3.innerHTML = '<input type="text" placeholder="PTO Dates">';
-            
+
+            const cell4 = newRow.insertCell(3);
+            cell4.innerHTML = '<button onclick="deleteTeamMember(this)">Delete</button>';
+
             // Update team size
-            document.getElementById('teamSize').innerText = document.getElementById('teamTable').rows.length;
+            updateTeamSize();
 
             // Recalculate total team days after adding a new member
             calculateTotalTeamDays();
         }
 
+        // Delete team member from table
+        function deleteTeamMember(button) {
+            const row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+            updateTeamSize();
+        }
+
+        // Refresh calculations for total team size
+        function updateTeamSize() {
+            document.getElementById('teamSize').innerText = document.getElementById('teamTable').rows.length;
+            calculateTotalTeamDays();
+        }
         // Calculate the total number of days for the sprint for all team members
         function calculateTotalTeamDays() {
             const availableDaysInputs = document.getElementsByClassName('available-days');

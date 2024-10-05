@@ -68,7 +68,7 @@
     <span id="teamSize">0</span><br><br>
 
     <label for="totalTeamDays">Total Team Days: </label>
-    <input type="number" id="totalTeamDays" value="0" disabled><br><br>
+    <span id="totalTeamDays">0</span><br><br>
 
     <label for="totalTeamCapacity">Total Team Capacity (%): </label>
     <span id="totalTeamCapacity">0</span><br><br>
@@ -77,7 +77,7 @@
     <input type="number" id="reservedCapacity" value="10" oninput="calculateTargetStoryPoints()"><br><br>
 
     <label for="targetStoryPoints">Target Story Points (Minus Reserved Capacity): </label>
-    <input type="number" id="targetStoryPoints" value="0" disabled><br><br>
+    <span id="targetStoryPoints">0</span><br><br>
 
     <script>
         window.onload = function() {
@@ -143,14 +143,14 @@
                     totalDays += days;
                 }
             }
-            document.getElementById('totalTeamDays').value = totalDays;
+            document.getElementById('totalTeamDays').innerText = totalDays;
 
             calculateTotalTeamCapacity();
         }
 
         function calculateTotalTeamCapacity() {
-            const totalTeamDays = parseFloat(document.getElementById('totalTeamDays').value);
-            const teamSize = parseInt(document.getElementById('teamSize').value);
+            const totalTeamDays = parseFloat(document.getElementById('totalTeamDays').innerText);
+            const teamSize = parseInt(document.getElementById('teamSize').innerText);
             const totalSprintDays = parseInt(document.getElementById('sprintDays').innerText);
 
             if (teamSize > 0 && totalSprintDays > 0) {
@@ -193,9 +193,9 @@
             if (!isNaN(totalTeamCapacity) && totalTeamCapacity > 0) {
                 const adjustedCapacity = totalTeamCapacity * (1 - reservedCapacity);
                 const targetStoryPoints = Math.round((adjustedCapacity / 100) * teamVelocity);
-                document.getElementById('targetStoryPoints').value = targetStoryPoints;
+                document.getElementById('targetStoryPoints').innerText = targetStoryPoints;
             } else {
-                document.getElementById('targetStoryPoints').value = 0;
+                document.getElementById('targetStoryPoints').innerText = 0;
             }
         }
     </script>

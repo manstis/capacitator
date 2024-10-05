@@ -65,7 +65,7 @@
     <button onclick="addTeamMember()">Add Team Member</button><br><br>
 
     <label for="teamSize">Team Size: </label>
-    <input type="number" id="teamSize" value="0" disabled><br><br>
+    <span id="teamSize">0</span><br><br>
 
     <label for="totalTeamDays">Total Team Days: </label>
     <input type="number" id="totalTeamDays" value="0" disabled><br><br>
@@ -125,7 +125,7 @@
             cell3.innerHTML = '<input type="text" placeholder="PTO Dates">';
             
             // Update team size
-            document.getElementById('teamSize').value = document.getElementById('teamTable').rows.length;
+            document.getElementById('teamSize').innerText = document.getElementById('teamTable').rows.length;
 
             // Recalculate total team days after adding a new member
             calculateTotalTeamDays();

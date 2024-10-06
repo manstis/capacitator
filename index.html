@@ -84,8 +84,8 @@
                 <input type="number" id="reservedCapacity" value="10" oninput="calculateTargetStoryPoints()"><br><br>
             </div>
             <div class="column">
-                <label>Total Sprint Days (Excluding Weekends): </label>
-                <span id="sprintDays">0</span> days<br><br>
+                <label title="Excluding Weekends">Total Sprint Days: </label>
+                <span id="sprintDays">0</span><br><br>
 
                 <label for="teamSize">Team Size: </label>
                 <span id="teamSize">0</span><br><br>
@@ -93,11 +93,11 @@
                 <label for="totalTeamDays">Total Team Days: </label>
                 <span id="totalTeamDays">0</span><br><br>
 
-                <label for="totalTeamCapacity">Total Team Capacity (%): </label>
-                <span id="totalTeamCapacity">0</span><br><br>
+                <label for="totalTeamCapacity">Sprint Capacity: </label>
+                <span id="totalTeamCapacity">0</span> (%)<br><br>
 
-                <label for="targetStoryPoints">Target Story Points (Minus Reserved Capacity): </label>
-                <span id="targetStoryPoints">0</span><br><br>
+                <label for="targetStoryPoints" title="Minus Reserved Capacity">Sprint Target: </label>
+                <span id="targetStoryPoints">0</span> Story Points<br><br>
             </div>
         </div>
         <!-- Row 3: Team Members Table -->
@@ -223,7 +223,7 @@
             const sprintEnd = new Date(document.getElementById('sprintEnds').value);
 
             // Calculate the number of working days excluding weekends
-            let workingDays = -1;
+            let workingDays = 0;
             let currentDate = new Date(sprintStart);
 
             while (currentDate <= sprintEnd) {

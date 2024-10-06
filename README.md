@@ -49,7 +49,9 @@ The tool will automatically calculate the following:
 
 ## Installation and Setup
 
-This web application is a static HTML project that can be run in any modern browser. To use it locally:
+You can use it online by visiting [Capacitator Online](https://capacitator.online).
+
+This web application is also a static HTML project that can be run in any modern browser. To use it locally:
 
 1. Clone the repository:
 
@@ -73,4 +75,4 @@ If you’d like to contribute to this project, feel free to fork the repository 
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://raw.githubusercontent.com/omaciel/capacitator/refs/heads/main/LICENSE) file for details.

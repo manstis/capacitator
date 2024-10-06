@@ -134,13 +134,25 @@
         <!-- Row 3: Team Members Table -->
         <div class="row table-container">
             <h5>Team Members Table</h5>
+            <!-- Add buttons for saving and loading templates -->
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
                         <th>Team Member</th>
                         <th>Available Days</th>
                         <th>PTO Dates</th>
-                        <th><button class="btn btn-primary btn-sm" onclick="addTeamMember()"><i class="bi bi-plus-circle"></i> Add</button></th>
+                        <th>
+                            <button class="btn btn-primary btn-sm" onclick="addTeamMember()">
+                                <i class="bi bi-plus-circle"></i> Add
+                            </button>
+                            <button class="btn btn-primary btn-sm" onclick="saveTemplateAsJSON()">
+                                <i class="bi bi-save"></i> Save
+                            </button>
+                            <label for="uploadTemplate" class="btn btn-info btn-sm">
+                                <i class="bi bi-upload"></i> Upload
+                            </label>
+                            <input type="file" id="uploadTemplate" accept=".json" style="display: none;" onchange="loadTemplateFromFile(this)" />
+                        </th>
                     </tr>
                 </thead>
                 <tbody id="teamTable">
@@ -302,6 +314,82 @@
             } else {
                 row.classList.remove('table-danger');
             }
+        }
+
+        // Function to save the template as a JSON file
+        function saveTemplateAsJSON() {
+            const template = {
+                teamVelocity: document.getElementById('teamVelocity').value,
+                sprintStarts: document.getElementById('sprintStarts').value,
+                sprintEnds: document.getElementById('sprintEnds').value,
+                reservedCapacity: document.getElementById('reservedCapacity').value,
+                teamMembers: []
+            };
+
+            // Get the team members data
+            document.querySelectorAll("#teamTable tr").forEach(row => {
+                const memberData = {
+                    name: row.cells[0].querySelector("input").value,
+                    availableDays: row.cells[1].querySelector("input").value,
+                    ptoDates: row.cells[2].querySelector("input").value,
+                };
+                template.teamMembers.push(memberData);
+            });
+
+            // Convert the template to JSON string
+            const jsonTemplate = JSON.stringify(template);
+
+            // Create a download link for the JSON file
+            const blob = new Blob([jsonTemplate], { type: "application/json" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "sprint_template.json";
+
+            // Trigger the download
+            link.click();
+        }
+
+        // Function to load the template from a JSON file
+        function loadTemplateFromFile(input) {
+            const file = input.files[0];
+            if (!file) {
+                alert("No file selected.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const template = JSON.parse(e.target.result);
+
+                    // Load the JSON data into the form fields
+                    document.getElementById('teamVelocity').value = template.teamVelocity;
+                    document.getElementById('sprintStarts').value = template.sprintStarts;
+                    document.getElementById('sprintEnds').value = template.sprintEnds;
+                    document.getElementById('reservedCapacity').value = template.reservedCapacity;
+
+                    // Clear the current team members
+                    document.getElementById('teamTable').innerHTML = '';
+
+                    // Load team members from JSON
+                    template.teamMembers.forEach(member => {
+                        addTeamMember();  // Add a new row
+                        const lastRow = document.querySelector("#teamTable tr:last-child");
+                        lastRow.cells[0].querySelector("input").value = member.name;
+                        lastRow.cells[1].querySelector("input").value = member.availableDays;
+                        lastRow.cells[2].querySelector("input").value = member.ptoDates;
+                    });
+
+                    updateTeamSize();
+                    calculateTotalTeamDays();
+                    alert("Template loaded successfully!");
+
+                } catch (error) {
+                    alert("Error loading template: " + error.message);
+                }
+            };
+
+            reader.readAsText(file);  // Read the file as a text string
         }
     </script>
 </body>

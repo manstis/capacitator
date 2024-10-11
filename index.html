@@ -387,10 +387,13 @@
                         lastRow.cells[0].querySelector("input").value = member.name;
                         lastRow.cells[1].querySelector("input").value = member.availableDays;
                         lastRow.cells[2].querySelector("input").value = member.ptoDates;
+                        updateTableRowColor(lastRow); // Apply conditional coloring
                     });
-
+                    
                     updateTeamSize();
+                    calculateSprintDays()
                     calculateTotalTeamDays();
+
                     alert("Template loaded successfully!");
 
                 } catch (error) {

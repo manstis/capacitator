@@ -180,7 +180,6 @@
             // Set the default values for Sprint Starts and Sprint Ends based on system's current date
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('sprintStarts').value = today;
-            document.getElementById('sprintStarts').setAttribute('min', today);
 
             // Set Sprint Ends to two weeks from the current date
             const twoWeeksFromNow = new Date();

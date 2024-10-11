@@ -275,7 +275,12 @@
             const sprintStart = new Date(document.getElementById('sprintStarts').value);
             const sprintEnd = new Date(document.getElementById('sprintEnds').value);
 
-            // Calculate the number of working days excluding weekends
+            // Ensure the end date is after the start date
+            if (sprintEnd < sprintStart) {
+                document.getElementById('sprintDays').innerText = "Invalid date range";
+                return;
+            }
+
             let workingDays = 0;
             let currentDate = new Date(sprintStart);
 
@@ -285,6 +290,11 @@
                     workingDays++;
                 }
                 currentDate.setDate(currentDate.getDate() + 1);
+            }
+
+            // Subtract 1 if both start and end dates are weekdays (counting both inclusively)
+            if (workingDays > 0 && sprintStart.getDay() !== 0 && sprintStart.getDay() !== 6 && sprintEnd.getDay() !== 0 && sprintEnd.getDay() !== 6) {
+                workingDays--;
             }
 
             document.getElementById('sprintDays').innerText = workingDays;

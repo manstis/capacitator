@@ -262,7 +262,7 @@
             const totalSprintDays = parseInt(document.getElementById('sprintDays').innerText);
 
             if (teamSize > 0 && totalSprintDays > 0) {
-                const totalTeamCapacity = (totalTeamDays / teamSize) * totalSprintDays;
+                const totalTeamCapacity = (totalTeamDays / (teamSize * totalSprintDays)) * 100;
                 document.getElementById('totalTeamCapacity').innerText = totalTeamCapacity.toFixed(2);
             } else {
                 document.getElementById('totalTeamCapacity').innerText = '0';

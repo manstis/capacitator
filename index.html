@@ -398,6 +398,9 @@
 
                 } catch (error) {
                     alert("Error loading template: " + error.message);
+                } finally {
+                    // Reset the input so that the onchange event will fire again for the same file
+                    input.value = '';
                 }
             };
 

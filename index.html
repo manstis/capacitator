@@ -216,7 +216,7 @@
             // Add input fields in the new row
             cell1.innerHTML = '<input type="text" class="form-control" placeholder="Teammate Name">';
             cell2.innerHTML = `<input type="number" class="form-control available-days" value="${document.getElementById('sprintDays').innerText}" oninput="calculateTotalTeamDays(); updateTableRowColor(this.parentElement.parentElement);">`;
-            cell3.innerHTML = '<input type="text" class="form-control" placeholder="PTO Dates">';
+            cell3.innerHTML = '<input type="text" class="form-control" placeholder="">';
 
             const cell4 = newRow.insertCell(3);
             cell4.innerHTML = '<button class="btn btn-danger btn-sm" onclick="deleteTeamMember(this)"><i class="bi bi-dash-circle"></i> Delete</button>';

@@ -284,17 +284,13 @@
             let workingDays = 0;
             let currentDate = new Date(sprintStart);
 
-            while (currentDate <= sprintEnd) {
+            // Loop through each date between the start and end date (inclusive)
+            while (currentDate < sprintEnd) {
                 const dayOfWeek = currentDate.getDay();
                 if (dayOfWeek !== 0 && dayOfWeek !== 6) { // Exclude Saturdays and Sundays
                     workingDays++;
                 }
                 currentDate.setDate(currentDate.getDate() + 1);
-            }
-
-            // Subtract 1 if both start and end dates are weekdays (counting both inclusively)
-            if (workingDays > 0 && sprintStart.getDay() !== 0 && sprintStart.getDay() !== 6 && sprintEnd.getDay() !== 0 && sprintEnd.getDay() !== 6) {
-                workingDays--;
             }
 
             document.getElementById('sprintDays').innerText = workingDays;
